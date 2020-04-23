@@ -32,4 +32,14 @@ public class CategoryServiceImpl implements CategoryService {
         category.setParentId(pid);
         return categoryMapper.select(category);
     }
+
+    /**
+     * 根据品牌信息查询商品分类
+     * @param bid
+     * @return
+     */
+    @Override
+    public List<Category> queryByBrandId(Long bid) {
+        return this.categoryMapper.queryByBrandId(bid);
+    }
 }

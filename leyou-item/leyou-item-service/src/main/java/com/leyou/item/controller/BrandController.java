@@ -62,4 +62,48 @@ public class BrandController {
         this.brandService.saveBrand(brand,cids);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    /**
+     * 修改品牌信息接口
+     * @param brand
+     * @param cids
+     * @return
+     */
+    @PutMapping
+    public ResponseEntity<Void> update(Brand brand,@RequestParam("cids") List<Long> cids){
+        this.brandService.updateBrand(brand,cids);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 删除中间表的数据
+     */
+    @DeleteMapping("cid_bid/{bid}")
+    public ResponseEntity<Void> deleteByBrandIdInCategoryBrand(@PathVariable("bid") Long bid){
+        this.brandService.deleteByBrandIdInCategoryBrand(bid);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 品牌删除接口
+     * 可单个删除  与 批量删除
+     */
+    @DeleteMapping("bid/{bid}")
+    public ResponseEntity<Void> deteleBrand(@PathVariable("bid") String bid){
+        //如果传过来是多个id，使用,隔开
+        String separator = ",";
+        if(bid.contains(separator)){
+            String[] ids = bid.split(separator);
+            for (String id : ids) {
+                //批量删除操作
+                this.brandService.deleteBrand(Long.parseLong(id));
+            }
+        }
+        else {
+            //如果传来只有一个id，格式转换，删除一个
+            this.brandService.deleteBrand(Long.parseLong(bid));
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

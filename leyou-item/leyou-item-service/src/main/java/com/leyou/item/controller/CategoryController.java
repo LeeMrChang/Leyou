@@ -46,4 +46,22 @@ public class CategoryController {
         return ResponseEntity.ok(list);
     }
 
+    /**
+     * 根据品牌信息查询商品分类
+     * @param bid
+     * @return
+     */
+    @GetMapping("bid/{bid}")
+    public ResponseEntity<List<Category>> queryByBrandId(@PathVariable("bid") Long bid){
+
+        List<Category> list = this.categoryService.queryByBrandId(bid);
+        if(CollectionUtils.isEmpty(list)){
+            //响应500
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        //响应的数据
+        return ResponseEntity.ok(list);
+    }
+
+
 }

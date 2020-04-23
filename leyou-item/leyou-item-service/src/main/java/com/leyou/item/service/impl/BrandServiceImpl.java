@@ -83,4 +83,50 @@ public class BrandServiceImpl implements BrandService {
         });
 
     }
+
+    /**
+     * 品牌修改
+     * @param brand
+     * @param cids
+     */
+    @Transactional
+    @Override
+    public void updateBrand(Brand brand, List<Long> cids) {
+        //删除原来的数据
+        deleteByBrandIdInCategoryBrand(brand.getId());
+
+        // 修改品牌信息
+        this.brandMapper.updateByPrimaryKeySelective(brand);
+
+        //维护品牌和分类中间表
+        cids.forEach(cid->{
+            //System.out.println("cid:"+cid+",bid:"+brand.getId());
+            this.brandMapper.insertCategoryAndBrand(cid, brand.getId());
+        });
+    }
+
+    /**
+     * 删除中间表操作
+     * @param bid
+     */
+    @Override
+    public void deleteByBrandIdInCategoryBrand(Long bid) {
+        this.brandMapper.deleteByBrandIdInCategoryBrand(bid);
+    }
+
+    /**
+     * 品牌删除
+     * @param id
+     */
+    @Transactional
+    @Override
+    public void deleteBrand(long id) {
+        //删除品牌信息
+        this.brandMapper.deleteByPrimaryKey(id);
+
+        //维护中间表
+        this.brandMapper.deleteByBrandIdInCategoryBrand(id);
+    }
+
+
 }

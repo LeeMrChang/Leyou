@@ -2,6 +2,7 @@ package com.leyou.item.pojo;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @ClassName:SpuDetail
@@ -11,7 +12,7 @@ import javax.persistence.Table;
  * @Description: TODO
  */
 @Table(name="tb_spu_detail")
-public class SpuDetail {
+public class SpuDetail implements Serializable {
     @Id
     private Long spuId;// 对应的SPU的id
     private String description;// 商品描述

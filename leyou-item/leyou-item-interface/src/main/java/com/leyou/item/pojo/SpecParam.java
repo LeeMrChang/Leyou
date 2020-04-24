@@ -1,6 +1,7 @@
 package com.leyou.item.pojo;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @ClassName:SpecParam
@@ -10,7 +11,7 @@ import javax.persistence.*;
  * @Description: TODO
  */
 @Table(name = "tb_spec_param")
-public class SpecParam {
+public class SpecParam implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

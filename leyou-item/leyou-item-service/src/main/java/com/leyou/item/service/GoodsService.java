@@ -1,7 +1,7 @@
 package com.leyou.item.service;
 
 import com.leyou.common.pojo.PageResult;
-import com.leyou.item.dto.SpuDto;
+import com.leyou.item.dto.SpuBo;
 
 /**
  * @ClassName:GoodsService
@@ -11,5 +11,7 @@ import com.leyou.item.dto.SpuDto;
  * @Description: TODO
  */
 public interface GoodsService {
-    PageResult<SpuDto> querySpuByPage(String key, Boolean saleable, Integer page, Integer rows);
+    PageResult<SpuBo> querySpuByPage(String key, Boolean saleable, Integer page, Integer rows);
+
+    void saveGoods(SpuBo spuBo);
 }

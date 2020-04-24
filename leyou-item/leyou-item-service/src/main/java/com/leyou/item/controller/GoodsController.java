@@ -20,7 +20,6 @@ import java.util.List;
  * @Description: TODO
  */
 @RestController
-@RequestMapping("spu")
 public class GoodsController {
 
     @Autowired
@@ -34,7 +33,7 @@ public class GoodsController {
      * @param rows   当前页显示页数
      * @return
      */
-    @GetMapping("page")
+    @GetMapping("spu/page")
     public ResponseEntity<PageResult<SpuDto>> page(
             @RequestParam(value = "key",required = false) String key,
             @RequestParam(value = "saleable",required = false) Boolean saleable,

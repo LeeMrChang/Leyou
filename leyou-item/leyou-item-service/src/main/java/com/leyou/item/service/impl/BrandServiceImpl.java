@@ -128,5 +128,15 @@ public class BrandServiceImpl implements BrandService {
         this.brandMapper.deleteByBrandIdInCategoryBrand(id);
     }
 
+    /**
+     * 根据分类id 查询关联的品牌信息
+     * @param cid
+     * @return
+     */
+    @Override
+    public List<Brand> queryBrandByCid(Long cid) {
+        return this.brandMapper.queryBrandByCid(cid);
+    }
+
 
 }

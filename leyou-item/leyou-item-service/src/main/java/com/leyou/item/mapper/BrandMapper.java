@@ -4,7 +4,10 @@ import com.leyou.item.pojo.Brand;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 /**
  * @ClassName:BrandMapper
@@ -31,5 +34,6 @@ public interface BrandMapper extends Mapper<Brand> {
     @Delete("DELETE FROM tb_category_brand WHERE brand_id = #{bid}")
     void deleteByBrandIdInCategoryBrand(Long bid);
 
-
+    @Select("SELECT * FROM tb_brand tb INNER JOIN tb_category_brand tcb on tb.id = tcb.brand_id WHERE tcb.category_id=#{cid}")
+    List<Brand> queryBrandByCid(@Param("cid")Long cid);
 }

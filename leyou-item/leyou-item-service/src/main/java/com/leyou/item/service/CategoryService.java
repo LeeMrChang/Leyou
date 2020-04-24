@@ -15,4 +15,6 @@ public interface CategoryService {
     List<Category> queryCategoryByPid(Long pid);
 
     List<Category> queryByBrandId(Long bid);
+
+    List<String> queryNamesByIds(List<Long> asList);
 }

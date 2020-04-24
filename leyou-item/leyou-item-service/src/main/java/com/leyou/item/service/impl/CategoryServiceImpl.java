@@ -6,7 +6,10 @@ import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName:CategoryServiceImpl
@@ -42,4 +45,19 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> queryByBrandId(Long bid) {
         return this.categoryMapper.queryByBrandId(bid);
     }
+
+    /**
+     * 根据多个分类id查出 对应过个分类名称
+     * @param asList
+     * @return
+     */
+    @Override
+    public List<String> queryNamesByIds(List<Long> asList) {
+        List<Category> categories = this.categoryMapper.selectByIdList(asList);
+        //将集合中的 元素赋值到另一个集合中 需要string类型的元素
+        List<String> strings = categories.stream().map(category -> category.getName()).collect(Collectors.toList());
+        return strings;
+    }
+
+
 }

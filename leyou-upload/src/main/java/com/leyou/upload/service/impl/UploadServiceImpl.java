@@ -68,9 +68,9 @@ public class UploadServiceImpl implements UploadService {
                 return null;
             }
 
+            String last = StringUtils.substringAfterLast(filename, ".");
             //保存到服务器
             //file.transferTo(new File("D:\\leyou\\images\\"+filename));
-            String last = StringUtils.substringAfterLast(filename, ".");
             //这个是FDS 生成的文件路径名
             StorePath storePath = this.fileStorageClient.uploadFile(
                     file.getInputStream(), //文件流

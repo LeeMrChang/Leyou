@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,5 +64,15 @@ public class CategoryController {
         return ResponseEntity.ok(list);
     }
 
-
+    /**
+     * 根据商品id 查看商品分类的接口
+     */
+    @GetMapping
+    public ResponseEntity<List<String>> queryNamesByIds(@RequestParam("ids") List<Long> ids){
+        List<String> list = this.categoryService.queryNamesByIds(ids);
+        if(CollectionUtils.isEmpty(list)){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(list);
+    }
 }

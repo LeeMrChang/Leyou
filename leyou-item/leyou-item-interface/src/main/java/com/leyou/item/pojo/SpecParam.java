@@ -24,7 +24,9 @@ public class SpecParam implements Serializable {
     @Column(name = "`numeric`")
     private Boolean numeric;
     private String unit;
+    //'是否是sku通用属性，true或false'
     private Boolean generic;
+    //'是否用于搜索过滤，true或false',
     private Boolean searching;
     private String segments;
 

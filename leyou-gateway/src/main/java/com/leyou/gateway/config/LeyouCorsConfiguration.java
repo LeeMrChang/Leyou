@@ -27,6 +27,8 @@ public class LeyouCorsConfiguration {
 
         //允许跨域的域名，如果要携带cookie不能写*.*
         configuration.addAllowedOrigin("http://manage.leyou.com");
+        //新增允许跨域，搜索微服务域名
+        configuration.addAllowedOrigin("http://www.leyou.com");
         //允许携带cookie
         configuration.setAllowCredentials(true);
         //代表所有请求方式

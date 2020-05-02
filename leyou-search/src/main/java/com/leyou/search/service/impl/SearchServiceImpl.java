@@ -3,21 +3,34 @@ package com.leyou.search.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leyou.common.pojo.PageResult;
 import com.leyou.item.pojo.*;
 import com.leyou.search.client.BrandClient;
 import com.leyou.search.client.CategoryClient;
 import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
 import com.leyou.search.pojo.Goods;
+import com.leyou.search.pojo.SearchRequest;
+import com.leyou.search.repository.GoodsRepository;
 import com.leyou.search.service.SearchService;
 
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.bouncycastle.math.raw.Nat;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SourceFilter;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.*;
 
 /**
@@ -42,10 +55,48 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private SpecificationClient specificationClient;
 
+    @Autowired
+    private GoodsRepository goodsRepository;
+
     /**
      * 对象 转为json 的序列化用法 mapper
      */
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    /**
+     * 根据关键字查询接口，可能需要分页、条件、聚合
+     * 使用SearchRequest对象将要查询的条件封装成一个查询对象
+     * @param searchRequest
+     * @return
+     */
+    @Override
+    public PageResult<Goods> search(SearchRequest searchRequest) {
+        //这里查询的数据是从es 非关系型数据库中查询的
+        if(StringUtils.isEmpty(searchRequest.getKey())){
+            return null;
+        }
+        //创建查询条件构造器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        //针对Goods 中all  字段进行查询  operator(Operator.AND)); 根据and交集进行查询
+       queryBuilder.withQuery(QueryBuilders.matchQuery("all",
+               searchRequest.getKey()).operator(Operator.AND));
+
+       //过滤查询出来之后 所有需要拿到前端展示的数据
+       queryBuilder.withSourceFilter(new FetchSourceFilter(
+               new String[]{"id","skus","subTitle"},null));
+
+       //分页
+        queryBuilder.withPageable(PageRequest.of(
+                searchRequest.getPage()-1,searchRequest.getSize()));
+
+
+        Page<Goods> goods = this.goodsRepository.search(queryBuilder.build());
+
+        return new PageResult<>(goods.getTotalElements(),
+                (long) goods.getTotalPages(),
+                goods.getContent());
+    }
 
     /**
      * ES上传Goods 数据 。数据来源都是从数据中查询得到
@@ -135,6 +186,7 @@ public class SearchServiceImpl implements SearchService {
 
         return goods;
     }
+
 
     /**
      * 用来区分商品价格区间的方法

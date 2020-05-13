@@ -3,6 +3,7 @@ package com.leyou.search.controller;
 import com.leyou.common.pojo.PageResult;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.pojo.SearchRequest;
+import com.leyou.search.pojo.SearchResult;
 import com.leyou.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,10 @@ public class SearchController {
      * 使用SearchRequest对象将要查询的条件封装成一个查询对象
      */
     @PostMapping("page")
-    public ResponseEntity<PageResult<Goods>> page(
+    public ResponseEntity<SearchResult> page(
             @RequestBody SearchRequest searchRequest){
 
-        PageResult<Goods> pageResult = this.searchService.search(searchRequest);
+        SearchResult pageResult = this.searchService.search(searchRequest);
         if(pageResult == null){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

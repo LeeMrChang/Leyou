@@ -25,6 +25,23 @@ public class SpecificationController {
     @Autowired
     private SpecificationService specificationService;
 
+
+
+
+    /**
+     * 查询规格参数组，及组内参数
+     * @param cid
+     * @return
+     */
+    @GetMapping("{cid}")
+    public ResponseEntity<List<SpecGroup>> querySpecsByCid(@PathVariable("cid") Long cid){
+        List<SpecGroup> list = this.specificationService.querySpecsByCid(cid);
+        if(list == null || list.size() == 0){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(list);
+    }
+
     /**
      * 根据分类id查询 分组信息
      * @param cid

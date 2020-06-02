@@ -7,6 +7,11 @@ spring:
     elasticsearch:
       cluster-name: elasticsearch
       cluster-nodes: 192.168.25.131:9300  # 配置ES 连接
+  rabbitmq:
+    host: 192.168.25.131
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
   jackson:
     default-property-inclusion: non_null  # 配置过滤数据为null的不展示
 eureka:

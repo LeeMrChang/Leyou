@@ -8,9 +8,14 @@ import com.leyou.item.mapper.*;
 import com.leyou.item.pojo.*;
 import com.leyou.item.service.CategoryService;
 import com.leyou.item.service.GoodsService;
+import com.sun.xml.internal.ws.resources.SenderMessages;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -48,6 +53,13 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private StockMapper stockMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    static  final Logger logger = LoggerFactory.getLogger(GoodsServiceImpl.class);
+
+
 
     /**
      * 商品 spu 的按条件 且分页查询
@@ -132,6 +144,9 @@ public class GoodsServiceImpl implements GoodsService {
         //最后新增商品sku 就是商品规格与商品参数的数据
         saveSkuAndStock(spuBo);
 
+        //新增商品需要需要发送消息队列
+        sendMessage(spuBo.getId(),"insert");
+
     }
 
     /**
@@ -198,6 +213,29 @@ public class GoodsServiceImpl implements GoodsService {
         //更新spuDetail信息
         this.spuDetailMapper.updateByPrimaryKeySelective(spubo.getSpuDetail());
 
+        //修改的时候也需要发送消息通知商品修改了
+        sendMessage(spubo.getId(),"update");
+
+    }
+
+    /**
+     * 根据spu的id查询spu
+     * @param id
+     * @return
+     */
+    @Override
+    public Spu querySpuById(Long id) {
+        return this.spuMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 根据skuId 查询sku对象
+     * @param id
+     * @return
+     */
+    @Override
+    public Sku querySkuById(Long id) {
+        return this.skuMapper.selectByPrimaryKey(id);
     }
 
     /**
@@ -218,5 +256,19 @@ public class GoodsServiceImpl implements GoodsService {
             stock.setStock(sku.getStock());
             this.stockMapper.insertSelective(stock);
         });
+    }
+
+    /**
+     * 发送消息的封装方法 根据商品id 同步商品数据 类型是修改还是新增
+     * @param id
+     * @param type
+     */
+    private void sendMessage(Long id, String type){
+        // 发送消息
+        try {
+            this.amqpTemplate.convertAndSend("item." + type, id);
+        } catch (Exception e) {
+            logger.error("{}商品消息发送异常，商品id：{}", type, id, e);
+        }
     }
 }

@@ -21,4 +21,8 @@ public interface SearchService {
     Goods buildGoods(Spu spuBo) throws IOException;
 
     SearchResult search(SearchRequest searchRequest);
+
+    void createIndex(Long id) throws IOException;
+
+    void deleteIndex(Long id);
 }

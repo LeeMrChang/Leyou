@@ -7,6 +7,14 @@ spring:
     url: jdbc:mysql:///leyou_86
     username: root
     password: root
+  rabbitmq:
+    host: 192.168.25.131
+    username: leyou    # 设置mq的用户
+    password: leyou
+    virtual-host: /leyou
+    template:
+      exchange: LEYOU.ITEM.EXCHANGE   # 设置交换机
+    publisher-confirms: true    # 生产者确认机制，确保消息会正确发送
 eureka:
   client:
     service-url:
